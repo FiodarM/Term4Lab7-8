@@ -14,9 +14,8 @@ t_conditions = [lambda x: 1 + 0*x, lambda x: -x**2]
 
 x = np.linspace(x_bounds[0], x_bounds[1], 100)
 t = np.linspace(t_bounds[0], t_bounds[1], 50)
-# x, t = np.meshgrid(x, t)
 
-u = wave_equation_solve_1d(a, f, x_bounds, t_bounds, x_conditions, t_conditions, 100, 50)
+u = wave_equation_solve_1d(a, f, x, t, x_conditions, t_conditions)
 
 def update_line(num, data, line):
     x, u = data
