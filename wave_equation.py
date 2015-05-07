@@ -26,13 +26,13 @@ def tridiag_solve(diags, f):
 
 def wave_equation_solve_1d(a, f, x, t, x_conditions, t_conditions):
     """
-    solves the wave equation of the following form: u_tt - a**2*u_xx == f(x, t)
+    solves a wave equation of the following form: u_tt - a**2*u_xx == f(x, t)
 
     """
     n_x, n_t = len(x), len(t)
     h = x[1] - x[0]
     tau = t[1] - t[0]
-    sigma = 0.25 * (1 - h ** 2 / tau ** 2)
+    sigma = 1./3 * (1 - (h / (a * tau))**2)
     x, t = np.meshgrid(x, t)
     u = np.zeros((n_x, n_t))
     mu = x_conditions
@@ -45,13 +45,15 @@ def wave_equation_solve_1d(a, f, x, t, x_conditions, t_conditions):
     kappa = a ** 2 * tau ** 2 / h ** 2
 
     for j in xrange(1, len(t) - 1):
-        d_sub = -0.5 * sigma * kappa * np.ones((n_x,))
+        d_sub = - sigma * kappa * np.ones((n_x,))
         d_super = np.copy(d_sub)
         d_main = 1 + 2 * sigma * kappa * np.ones((n_x,))
         diags = [d_sub, d_main, d_super]
-        rh = np.array(kappa * (1 - sigma) *
-                      (u[j - 1][2:] - 2 * u[j - 1][1:-1] + u[j - 1][:-2]) + (tau ** 2) * f(x[j][1:-1], t[j][1:-1]) + 2 *
-                      u[j][1:-1] - u[j - 1][1:-1])
+        nonuniformity = np.array(f(x[j][1:-1], t[j][1:-1]))
+        rh = np.array(kappa *
+            (1 - 2 * sigma) * (u[j - 1][2:] - 2 * u[j - 1][1:-1] + u[j - 1][:-2]) +
+                      sigma * (u[j][2:] - 2 * u[j][1:-1] + u[j][:-2]) + (tau ** 2) * nonuniformity
+                      + 2 * u[j][1:-1] - u[j - 1][1:-1])
         u[j + 1][1:-1] = tridiag_solve(diags, rh)
 
     return u
