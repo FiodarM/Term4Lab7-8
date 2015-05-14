@@ -71,7 +71,7 @@ def wave_equation_solve_1d(a, f, x, t, x_conditions, t_conditions):
     u[-1] = mu[1](t.transpose()[-1])
     u = u.transpose()
     u[0] = phi[0](x[0])
-    u[1] = u[0] + tau * phi[1](x[0]) + 0.5 * tau ** 2 * (a ** 2 * der(phi[0], x[0], dx=h, n=2) + f(x[0], t[0]))
+    u[1] = u[0] + tau * phi[1](x[0]) + 0.5 * tau ** 2 * (a ** 2 * der(phi[0], x[0], dx=h ** 2, n=2) + f(x[0], t[0]))
     kappa = (a * tau / h) ** 2
 
     for j in xrange(1, len(t) - 1):
@@ -84,8 +84,8 @@ def wave_equation_solve_1d(a, f, x, t, x_conditions, t_conditions):
                       (1 - 2 * sigma) * (u[j - 1][2:] - 2 * u[j - 1][1:-1] + u[j - 1][:-2]) +
                       sigma * (u[j][2:] - 2 * u[j][1:-1] + u[j][:-2]) + (tau ** 2) * nonuniformity
                       + 2 * u[j][1:-1] - u[j - 1][1:-1])
-        rh[0] -= d_sub[0] * u[j][0]
-        rh[-1] -= d_super[0] * u[j][-1]
+        rh[0] -= d_sub[0] * u[j + 1][0]
+        rh[-1] -= d_super[-1] * u[j + 1][-1]
         u[j + 1][1:-1] = tridiag_solve(diags, rh)
 
     return u
