@@ -10,16 +10,16 @@ a = 1.
 f = lambda x, t: exp(-x**2*t) * (2*a*t - 4 * a * t**2 * x**2 - x**2)
 f_simple = lambda x, t: 0 * x + 0 * t
 x_conditions = [lambda t: 1 + 0 * t, lambda t: 0 + exp(-t)]
-x_simple_conditions = [lambda t: -1 + 0 * sin(t), lambda t: 0 * t]
+x_simple_conditions = [lambda t: 0 * sin(t), lambda t: 0 * t]
 t_conditions = [lambda x: 1 + 0 * x, lambda x: -x ** 2]
-t_simple_conditions = [lambda x: -1 + x, lambda x: 0 * x]
+t_simple_conditions = [lambda x: sin(pi * x), lambda x: 0 * x]
 
 x_bounds = [0, 1]
 t_bounds = [0, 10]
 x = np.linspace(x_bounds[0], x_bounds[1], 200)
 t = np.linspace(t_bounds[0], t_bounds[1], 100)
 
-u = wave_equation_solve_1d(a, f_simple, x, t, x_simple_conditions, t_simple_conditions)
+u = wave_equation_solve_1d(a, f, x, t, x_conditions, t_conditions)
 
 
 # plotting
