@@ -32,7 +32,7 @@ def wave_equation_solve_1d(a, f, x, t, x_conditions, t_conditions):
     n_x, n_t = len(x), len(t)
     h = x[1] - x[0]
     tau = t[1] - t[0]
-    sigma = 1. / 2 * (1 - (h / (a * tau)) ** 2)
+    sigma = 1. / 3. * (1 - (h / (a * tau)) ** 2)
     x, t = np.meshgrid(x, t)
     u = np.zeros((n_x, n_t))
     mu = x_conditions
@@ -54,6 +54,7 @@ def wave_equation_solve_1d(a, f, x, t, x_conditions, t_conditions):
                       (1 - 2 * sigma) * (u[j - 1][2:] - 2 * u[j - 1][1:-1] + u[j - 1][:-2]) +
                       sigma * (u[j][2:] - 2 * u[j][1:-1] + u[j][:-2]) + (tau ** 2) * nonuniformity
                       + 2 * u[j][1:-1] - u[j - 1][1:-1])
+
         rh[0] -= d_sub[0] * u[j + 1][0]
         rh[-1] -= d_super[-1] * u[j + 1][-1]
         u[j + 1][1:-1] = tridiag_solve(diags, rh)
