@@ -3,6 +3,7 @@ __author__ = 'fiodar'
 from wave_equation import *
 from numpy import exp, sin, cos, pi
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 from matplotlib.widgets import Slider, Button
 
 a = 1.
@@ -34,6 +35,18 @@ axtime = plt.axes([0.2, 0.1, 0.65, 0.03])
 stime = Slider(axtime, 'time', t_bounds[0], t_bounds[1] * (1 - 1. / len(t)), valinit=t_bounds[0])
 
 
+def animate_wave(time, data, line):
+    x, u = data
+    stime.set_val(t_bounds[1] * float(time) / len(t))
+    line.set_data(x, u[time])
+    return line,
+
+
+def init():
+    l.set_data([], [])
+    return l,
+
+
 def update(val):
     time = stime.val
     l.set_data(x, u[int(time / t_bounds[1] * len(t))])
@@ -46,5 +59,10 @@ button_reset = Button(resetax, 'Reset', color='w', hovercolor='0.975')
 def reset(event):
     stime.reset()
 button_reset.on_clicked(reset)
+
+# anim = animation.FuncAnimation(fig, animate_wave, frames=len(t),
+# init_func=init, fargs=([x, u], l), blit=True, interval=t_bounds[1]*10)
+# anim.save('solution.mp4', writer='ffmpeg', fps=30)
+
 ax.grid()
 plt.show()
